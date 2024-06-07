@@ -3,8 +3,7 @@ import { IContextType, IUser } from "@/types";
 import { createContext, useContext, useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 
-const navigate = useNavigate();
-export const INITIAL_USER = {
+export const INITIAL_USER: IUser = {
   id: "",
   name: "",
   username: "",
@@ -12,7 +11,8 @@ export const INITIAL_USER = {
   imageUrl: "",
   bio: "",
 };
-const INITIAL_STATE = {
+
+const INITIAL_STATE: IContextType = {
   user: INITIAL_USER,
   isLoading: false,
   isAuthenticated: false,
@@ -27,11 +27,11 @@ const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   const [user, setUser] = useState<IUser>(INITIAL_USER);
   const [isLoading, setIsLoading] = useState(false);
   const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const navigate = useNavigate();
 
   const checkAuthUser = async () => {
     try {
       const currentAccount = await getCurrentUser();
-
       if (currentAccount) {
         setUser({
           id: currentAccount.$id,
@@ -46,19 +46,19 @@ const AuthProvider = ({ children }: { children: React.ReactNode }) => {
       }
       return false;
     } catch (error) {
-      console.log(error);
+      console.error("Failed to check authentication:", error);
       return false;
     }
   };
 
   useEffect(() => {
-    if (
-      localStorage.getItem("cookieFallback") === "[]"
-      // localStorage.getItem("cookieFallback") === null
-    )
+    if (localStorage.getItem("cookieFallback") === "[]") {
       navigate("/sign-in");
-    checkAuthUser();
-  }, []);
+    } else {
+      checkAuthUser();
+    }
+  }, [navigate]);
+
   const value = {
     user,
     setUser,
@@ -67,7 +67,8 @@ const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     setIsAuthenticated,
     checkAuthUser,
   };
-  return <AuthContext.Provider value={value}></AuthContext.Provider>;
+
+  return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
 };
 
 export const useUserContext = () => useContext(AuthContext);

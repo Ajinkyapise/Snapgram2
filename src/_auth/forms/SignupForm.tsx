@@ -53,8 +53,7 @@ const SignupForms = () => {
     // console.log(values);
 
     if (!newUser) {
-      return;
-      toast({
+      return toast({
         title: "Signup Failed",
       });
     }
@@ -71,7 +70,7 @@ const SignupForms = () => {
     const isLoggedIn = await checkAuthUser();
 
     if (isLoggedIn) {
-      form.reset;
+      form.reset();
 
       navigate("/");
     } else {

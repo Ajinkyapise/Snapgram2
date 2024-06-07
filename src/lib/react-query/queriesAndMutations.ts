@@ -1,6 +1,6 @@
 import { INewUser } from "@/types";
 import {
-  useQueries,
+  useQuery,
   useMutation,
   useQueryClient,
   useInfiniteQuery,
